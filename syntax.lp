@@ -55,10 +55,6 @@ notation = infix 2;
 symbol ≠ [t] (x y : τ t) ≔ ¬ (x = y);
 notation ≠ infix 2;
 
-// Set constructors
-constant symbol P [t] : τ t → τ (P_T t);
-constant symbol × [t1 t2] : τ t1 → τ t2 → τ (t1 ×_T t2);
-
 // Belonging
 constant symbol ∈ [t] : τ t → τ (P_T t) → U;
 notation ∈ infix 2;
@@ -66,13 +62,13 @@ symbol notin [t] (x : τ t) y ≔ ¬ (x ∈ y);
 notation notin infix 1;
 
 // Inclusion
-symbol ⊆ x y ≔ x ∈ P y;
+symbol ⊆ [t] (x y : τ (P_T t)) ≔ (`∀ e, e ∈ x ⇒ e ∈ y);
 notation ⊆ infix 2;
-symbol ⊂ x y ≔ x ⊆ y ∧ x ≠ y;
+symbol ⊂ [t] (x y : τ (P_T t)) ≔ x ⊆ y ∧ x ≠ y;
 notation ⊂ infix 2;
-symbol notsubseteq x y ≔ ¬ (x ⊆ y);
+symbol notsubseteq [t] (x y : τ (P_T t)) ≔ ¬ (x ⊆ y);
 notation notsubseteq infix 2;
-symbol notsubset x y ≔ ¬ (x ⊂ y);
+symbol notsubset [t] (x y : τ (P_T t)) ≔ ¬ (x ⊂ y);
 notation notsubset infix 2;
 
 // Comparisons for Z
@@ -109,6 +105,8 @@ notation >_FLOAT infix 2;
 // TODO what is $0 and renaming data?
 
 // TODO data definitions: strings, integers, and reals (and floats?)
+constant symbol 0 : τ Z_T;
+constant symbol 1 : τ Z_T;
 
 // Booleans
 constant symbol TRUE : τ BOOL_T;
@@ -166,11 +164,35 @@ constant symbol max : τ (P_T Z_T) → τ Z_T;
 constant symbol min : τ (P_T Z_T) → τ Z_T;
 constant symbol card [t] : τ (P_T t) → τ Z_T;
 
-// TODO fix
-constant symbol Sigma_Z : τ (P_T Z_T) → τ Z_T;
-constant symbol Pi_Z : τ (P_T Z_T) → τ Z_T;
-constant symbol Sigma_R : τ (P_T R_T) → τ R_T;
-constant symbol Pi_R : τ (P_T R_T) → τ R_T;
+// TODO add generalized sums and generalized products
+
+// Couples
+constant symbol ↦ [t1 t2] : τ t1 → τ t2 → τ (t1 ×_T t2);
+notation ↦ infix 2;
+
+// Sets
+// Set constructors
+constant symbol specify [t] : (τ t → U) → τ (P_T t);
+symbol P [t] (x : τ (P_T t)) ≔ specify (λ y, (y ⊆ x));
+// TODO maybe define finite extensionality, and give a definition of finite subsets ?
+constant symbol F [t] : τ (P_T t) → τ (P_T (P_T t));
+constant symbol × [t1 t2] : τ (P_T t1) → τ (P_T t2) → τ ((P_T t1) ×_T (P_T t2));
+symbol ∅ [t] : τ (P_T t) ≔ specify (λ x, x ≠ x);
+symbol P1 [t] (x : τ (P_T t)) ≔ specify (λ f : τ (P_T t), (f ∈ P x) ∧ (f ≠ ∅));
+symbol F1 [t] (x : τ (P_T t)) ≔ specify (λ f : τ (P_T t), (f ∈ F x) ∧ (f ≠ ∅));
+symbol -- x y ≔ specify (λ z, x ≤_Z z ∧ z ≤_Z y);
+notation -- infix 2;
+
+symbol Z ≔ specify [Z_T] (λ x, x = x);
+symbol N ≔ specify (λ x, 0 ≤_Z x);
+symbol N1 ≔ specify (λ x, 1 ≤_Z x);
+symbol NAT ≔ 0 -- MAXINT;
+symbol NAT1 ≔ 1 -- MAXINT;
+symbol INT ≔ MININT -- MAXINT;
+symbol R ≔ specify [R_T] (λ x, x = x);
+symbol FLOAT ≔ specify [FLOAT_T] (λ x, x = x);
+symbol BOOL ≔ specify [BOOL_T] (λ x, x = x);
+symbol STRING ≔ specify [FLOAT_T] (λ x, x = x);
 
 // Records
 constant symbol rec_nil [t] (id : ID) (x : τ t) : τ (struct_T (struct_nil id t));
