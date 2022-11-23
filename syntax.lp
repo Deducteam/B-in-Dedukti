@@ -4,6 +4,10 @@
 // Identifiers
 constant symbol ID : TYPE;
 
+// Propositions
+constant symbol U : TYPE;
+constant symbol Thm : U → TYPE;
+
 /** B Types */
 constant symbol T : TYPE;
 constant symbol τ : T → TYPE;
@@ -16,20 +20,50 @@ constant symbol BOOL_T : T;
 constant symbol STRING_T : T;
 
 // Formal types
-constant symbol type_T : ID → T;
+constant symbol type_T : ID → T; // ID_type
+// Generic_Type does not exist
 
 // Type constructors
-constant symbol Set : T → T;
-constant symbol * : T → T → T;
+constant symbol Set : T → T; // Pow
+constant symbol * : T → T → T; // Product
 notation * infix 1;
+
+// Lists
+constant symbol list : T → TYPE;
+constant symbol nil t : list t;
+constant symbol cons t : τ t → list t → list t;
+
+// variable number of arguments (for curryfying lambda-abstractions)
+constant symbol typlist : TYPE;
+constant symbol typnil : T → typlist;
+constant symbol typcons : T → typlist → typlist;
+symbol curryT : typlist → T → TYPE;
+rule curryT (typnil $t) $u ↪ τ $t → τ $u;
+rule curryT (typcons $t $l) $u ↪ τ $t → curryT $l $u;
+
+symbol curryU : typlist → TYPE;
+rule curryU (typnil $t) ↪ τ $t → U;
+rule curryU (typcons $t $l) ↪ τ $t → curryU $l;
+
+symbol to_T : typlist → T;
+rule to_T (typnil $t) ↪ $t;
+rule to_T (typcons $t $u) ↪ $t * to_T $u; // TODO is this correct?
 
 // Structures
 // Note that the order of declaration is relevant in Atelier B, i.e. struct(a : A, b : B) ≠ struct (b : B, a : A)
 // I do not check that all record labels are different (is this a problem?)
 constant symbol struct_sig : TYPE;
-constant symbol struct_nil (i : ID) (t : T) : struct_sig;
-constant symbol struct_cons (i : ID) (t : T) (cdr : struct_sig) : struct_sig;
-constant symbol struct_T : struct_sig → T;
+constant symbol struct_nil : ID → T → struct_sig;
+constant symbol struct_cons : ID → T → struct_sig → struct_sig;
+constant symbol struct_T : struct_sig → T; // Struct_type
+
+constant symbol record_sig : TYPE;
+constant symbol record_nil [t] : ID → τ t → record_sig;
+constant symbol record_cons [t] : ID → τ t → record_sig → record_sig;
+
+symbol record_type : record_sig → struct_sig;
+rule record_type (record_nil [$t] $i _) ↪ struct_nil $i $t;
+rule record_type (record_cons [$t] $i _ $tl) ↪ struct_cons $i $t (record_type $tl);
 
 constant symbol accessible : ID → T → struct_sig → TYPE;
 constant symbol accessible_nil id t : accessible id t (struct_nil id t);
@@ -37,9 +71,6 @@ constant symbol accessible_cons id t s : accessible id t (struct_cons id t s);
 constant symbol skip id1 t1 id2 t2 s : accessible id1 t1 s → accessible id1 t1 (struct_cons id2 t2 s);
 
 /* Predicates */
-constant symbol U : TYPE;
-constant symbol Thm : U → TYPE;
-
 // Propositional logic
 constant symbol ⇒ : U → U → U; // Imply
 notation ⇒ infix 1;
@@ -154,6 +185,7 @@ constant symbol right_tree [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Set
 constant symbol infix_tree [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Z_T * t)); // Infix
 constant symbol bin_unary [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Set (Z_T * Z_T) * t)); // Bin_unary
 
+// Binary operators
 constant symbol pair [t u] : τ t → τ u → τ (t * u); // Pair
 // Prod does not exist
 constant symbol *_i : τ Z_T → τ Z_T → τ Z_T; // IProd
@@ -249,3 +281,48 @@ constant symbol rank [t] : τ (Set (Set(Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)
 constant symbol father [t] : τ (Set (Set(Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ (Set (Z_T * Z_T)); // Father
 constant symbol subtree [t] : τ (Set (Set(Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ (Set (Set (Z_T * Z_T) * t)); // Subtree
 constant symbol arity [t] : τ (Set (Set(Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ Z_T; // arity
+
+// Ternary operators
+constant symbol son [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ Z_T → τ (Set (Z_T * Z_T)); // Son
+constant symbol bin_ternary [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ t → τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Set (Z_T * Z_T) * t)); // Bin_ternary
+
+// Nary operators
+constant symbol sequence [t] : list t → τ (Set (Z_T * t)); // Sequence
+constant symbol extension [t] : list t → τ (Set t); // Extension
+
+// Quantified operators
+constant symbol % [t u] : curryU t → curryT t u → τ (Set (to_T t * u)); // Lambda
+// SIGMA does not exist
+constant symbol iSIGMA [t] : curryU t → curryT t Z_T → τ Z_T; // ISIGMA
+constant symbol rSIGMA [t] : curryU t → curryT t R_T → τ R_T; // RSIGMA
+// PI does not exist
+constant symbol iPI [t] : curryU t → curryT t Z_T → τ Z_T; // IPI
+constant symbol rPI [t] : curryU t → curryT t R_T → τ R_T; // RPI
+constant symbol INTER [t u] : curryU t → curryT t (Set u) → τ (Set u); // INTER
+constant symbol UNION [t u] : curryU t → curryT t (Set u) → τ (Set u); // UNION
+constant symbol comprehension [t] : curryU t → τ (Set (to_T t)); // Quantified_Set
+
+// Booleans
+constant symbol true : τ BOOL_T; // true (Boolean_Literal)
+constant symbol false : τ BOOL_T; // false (Boolean_Literal)
+constant symbol Boolean_Exp : U → τ BOOL_T; // Boolean_Exp
+
+// Other stuff
+constant symbol emptyset t : τ (Set t); // EmptySet
+constant symbol emtpyseq t : τ (Set (Z_T * t)); // EmptySeq
+constant symbol cst t : ID → τ (Set t); // Id_exp
+
+// Integers
+constant symbol pos_int : TYPE;
+constant symbol xH : pos_int;
+constant symbol x0 : pos_int → pos_int;
+constant symbol x1 : pos_int → pos_int;
+constant symbol 0 : τ Z_T;
+constant symbol Zpos : pos_int → τ Z_T;
+constant symbol Zneg : pos_int → τ Z_T;
+
+// Records
+constant symbol struct (r : record_sig) : τ (Set (struct_T (record_type r))); // Struct_exp
+constant symbol record (r : record_sig) : τ (struct_T (record_type r)); // Record
+constant symbol record_update [t u] (r : τ (struct_T t)) (i : ID) : τ u → accessible i u t → τ (struct_T t); // Record_Update
+constant symbol record_field_access [t u] (r : τ (struct_T t)) (i : ID) : accessible i u t → τ u; // Record_Field_Access
