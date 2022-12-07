@@ -8,30 +8,35 @@ constant symbol ID : TYPE;
 constant symbol U : TYPE;
 constant symbol Thm : U → TYPE;
 
-/** B Types */
+// B Types
 constant symbol T : TYPE;
 constant symbol τ : T → TYPE;
-
-// Base types
-constant symbol Z_T : T;
-constant symbol R_T : T;
-constant symbol FLOAT_T : T;
-constant symbol BOOL_T : T;
-constant symbol STRING_T : T;
-
-// Formal types
-constant symbol type_T : ID → T; // ID_type
-// Generic_Type does not exist
 
 // Type constructors
 constant symbol Set : T → T; // Pow
 constant symbol * : T → T → T; // Product
 notation * infix 1;
 
+// Base types
+constant symbol Z_T : T;
+constant symbol INTEGER : τ (Set Z_T);
+constant symbol R_T : T;
+constant symbol REAL : τ (Set R_T);
+constant symbol FLOAT_T : T;
+constant symbol FLOAT : τ (Set FLOAT_T);
+constant symbol BOOL_T : T;
+constant symbol BOOL : τ (Set BOOL_T);
+constant symbol STRING_T : T;
+constant symbol STRING : τ (Set STRING_T);
+
+// Formal types
+constant symbol type_T : ID → T; // ID_type
+// Generic_Type does not exist
+
 // Lists
 constant symbol list : T → TYPE;
-constant symbol nil t : list t;
-constant symbol cons t : τ t → list t → list t;
+constant symbol nil [t] : list t;
+constant symbol cons [t] : τ t → list t → list t;
 
 // variable number of arguments (for curryfying lambda-abstractions)
 constant symbol typlist : TYPE;
@@ -47,7 +52,8 @@ rule curryU (typcons $t $l) ↪ τ $t → curryU $l;
 
 symbol to_T : typlist → T;
 rule to_T (typnil $t) ↪ $t;
-rule to_T (typcons $t $u) ↪ $t * to_T $u; // TODO is this correct?
+rule to_T (typcons $t (typnil $u)) ↪ $t * $u;
+rule to_T (typcons $t (typcons $u $v)) ↪ to_T (typcons ($t * $u) $v);
 
 // Structures
 // Note that the order of declaration is relevant in Atelier B, i.e. struct(a : A, b : B) ≠ struct (b : B, a : A)
@@ -66,9 +72,9 @@ rule record_type (record_nil [$t] $i _) ↪ struct_nil $i $t;
 rule record_type (record_cons [$t] $i _ $tl) ↪ struct_cons $i $t (record_type $tl);
 
 constant symbol accessible : ID → T → struct_sig → TYPE;
-constant symbol accessible_nil id t : accessible id t (struct_nil id t);
-constant symbol accessible_cons id t s : accessible id t (struct_cons id t s);
-constant symbol skip id1 t1 id2 t2 s : accessible id1 t1 s → accessible id1 t1 (struct_cons id2 t2 s);
+constant symbol accessible_nil [id t] : accessible id t (struct_nil id t);
+constant symbol accessible_cons [id t s] : accessible id t (struct_cons id t s);
+constant symbol skip [id1 t1 id2 t2 s] : accessible id1 t1 s → accessible id1 t1 (struct_cons id2 t2 s);
 
 /* Predicates */
 // Propositional logic
@@ -194,8 +200,8 @@ constant symbol *_r : τ R_T → τ R_T → τ R_T; // RProd
 notation *_r infix 1;
 constant symbol *_f : τ FLOAT_T → τ FLOAT_T → τ FLOAT_T; // FProd
 notation *_f infix 1;
-constant symbol *s [t u] : τ (Set t) → τ (Set u) → τ (Set (t * u)); // SProd
-notation *s infix 1;
+constant symbol *_s [t u] : τ (Set t) → τ (Set u) → τ (Set (t * u)); // SProd
+notation *_s infix 1;
 // Exp does not exist
 constant symbol **i : τ Z_T → τ Z_T → τ Z_T; // IExp
 notation **i infix 1;
@@ -326,3 +332,9 @@ constant symbol struct (r : record_sig) : τ (Set (struct_T (record_type r))); /
 constant symbol record (r : record_sig) : τ (struct_T (record_type r)); // Record
 constant symbol record_update [t u] (r : τ (struct_T t)) (i : ID) : τ u → accessible i u t → τ (struct_T t); // Record_Update
 constant symbol record_field_access [t u] (r : τ (struct_T t)) (i : ID) : accessible i u t → τ u; // Record_Field_Access
+
+constant symbol id1 : ID;
+constant symbol id2 : ID;
+
+symbol foo ≔ record (record_cons id1 true (record_nil id2 0));
+symbol bar ≔ record_field_access foo id2 (skip accessible_nil);
