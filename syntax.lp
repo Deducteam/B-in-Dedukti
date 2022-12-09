@@ -78,6 +78,8 @@ constant symbol skip [id1 t1 id2 t2 s] : accessible id1 t1 s → accessible id1 
 
 /* Predicates */
 // Propositional logic
+constant symbol TRUE : U; // nullary Or
+constant symbol FALSE : U; // nullary And
 constant symbol ⇒ : U → U → U; // Imply
 notation ⇒ infix 1;
 constant symbol ⇔ : U → U → U; // Equiv
