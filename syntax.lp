@@ -93,7 +93,7 @@ constant symbol ¬ : U → U; // Not
 // Quantifiers
 constant symbol ∀ [t] : (τ t → U) → U; // Forall
 notation ∀ quantifier;
-symbol ∃ [t] (f : τ t → U) : (τ t → U) → U; // Exists
+constant symbol ∃ [t] : (τ t → U) → U; // Exists
 notation ∃ quantifier;
 
 // Binary predicates
@@ -337,6 +337,3 @@ constant symbol record_field_access [t u] (r : τ (struct_T t)) (i : ID) : acces
 
 constant symbol id1 : ID;
 constant symbol id2 : ID;
-
-symbol foo ≔ record (record_cons id1 true (record_nil id2 0));
-symbol bar ≔ record_field_access foo id2 (skip accessible_nil);
