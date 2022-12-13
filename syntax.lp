@@ -67,6 +67,10 @@ constant symbol record_sig : TYPE;
 constant symbol record_nil [t] : ID → τ t → record_sig;
 constant symbol record_cons [t] : ID → τ t → record_sig → record_sig;
 
+symbol struct_type : record_sig → struct_sig;
+rule struct_type (record_nil [Set $t] $i _) ↪ struct_nil $i $t;
+rule struct_type (record_cons [Set $t] $i _ $tl) ↪ struct_cons $i $t (struct_type $tl);
+
 symbol record_type : record_sig → struct_sig;
 rule record_type (record_nil [$t] $i _) ↪ struct_nil $i $t;
 rule record_type (record_cons [$t] $i _ $tl) ↪ struct_cons $i $t (record_type $tl);
@@ -330,7 +334,7 @@ constant symbol Zpos : pos_int → τ Z_T;
 constant symbol Zneg : pos_int → τ Z_T;
 
 // Records
-constant symbol struct (r : record_sig) : τ (Set (struct_T (record_type r))); // Struct_exp
+constant symbol struct (r : record_sig) : τ (Set (struct_T (struct_type r))); // Struct_exp
 constant symbol record (r : record_sig) : τ (struct_T (record_type r)); // Record
 constant symbol record_update [t u] (r : τ (struct_T t)) (i : ID) : τ u → accessible i u t → τ (struct_T t); // Record_Update
 constant symbol record_field_access [t u] (r : τ (struct_T t)) (i : ID) : accessible i u t → τ u; // Record_Field_Access
