@@ -1,4 +1,3 @@
-/* TODO add header */
 // TODO fix infix precedence
 
 // Identifiers
@@ -258,8 +257,8 @@ constant symbol <-> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u)))
 notation <-> infix 1;
 constant symbol <- [t] : τ (Set (Z_T * t)) → τ t → τ (Set (Z_T * t)); // TailInsert
 notation <- infix 1;
-constant symbol dom- [t u] : τ (Set (t * u)) → τ (Set t) → τ (Set (t * u)); // DomSubtract
-constant symbol domrestrict [t u] : τ (Set (t * u)) → τ (Set t) → τ (Set (t * u)); // DomSubtract
+constant symbol dom- [t u] : τ (Set t) → τ (Set (t * u)) → τ (Set (t * u)); // DomSubtract
+constant symbol domrestrict [t u] : τ (Set t) → τ (Set (t * u)) → τ (Set (t * u)); // DomSubtract
 constant symbol >+> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // PartialInject
 notation >+> infix 1;
 constant symbol >-> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // TotalInject
