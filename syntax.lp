@@ -167,8 +167,8 @@ constant symbol minusr : τ R_T → τ R_T; // RMinus
 constant symbol ~ [t u] : τ (Set (t * u)) → τ (Set (u * t)); // Inversion
 constant symbol size [t] : τ (Set (Z_T * t)) → τ Z_T; // Size
 constant symbol perm [t] : τ (Set t) → τ (Set (Set (Z_T * t))); // Perm
-constant symbol first [t] : τ (Set t) → τ t; // First
-constant symbol last [t] : τ (Set t) → τ t; // Last
+constant symbol first [t] : τ (Set (Z_T * t)) → τ t; // First
+constant symbol last [t] : τ (Set (Z_T * t)) → τ t; // Last
 constant symbol id [t] : τ (Set t) → τ (Set (t * t)); // Identity
 constant symbol closure [t] : τ (Set (t * t)) → τ (Set (t * t)); // Closure
 constant symbol closure1 [t] : τ (Set (t * t)) → τ (Set (t * t)); // Closure1
