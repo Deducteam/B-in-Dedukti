@@ -278,7 +278,7 @@ constant symbol map [t u] : τ t → τ u → τ (t * u); // MapLet
 notation map infix 1;
 constant symbol imagerestrict [t u] : τ (Set (t * u)) → τ (Set u) → τ (Set (t * u)); // ImageRestrict
 constant symbol image- [t u] : τ (Set (t * u)) → τ (Set u) → τ (Set (t * u)); // ImageSubtract
-constant symbol image [t u] : τ (Set (t * u)) → τ t → τ (Set u); // Image
+constant symbol image [t u] : τ (Set (t * u)) → τ (Set t) → τ (Set u); // Image
 constant symbol eval [t u] : τ (Set (t * u)) → τ t → τ u; // Eval
 // Doesntexist2 (<') does not exist
 constant symbol prj1 [t u] : τ (Set t) → τ (Set u) → τ (Set ((t * u) * t)); // Prj1
