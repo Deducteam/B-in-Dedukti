@@ -320,7 +320,7 @@ constant symbol Boolean_Exp : U → τ BOOL_T; // Boolean_Exp
 
 // Other stuff
 constant symbol emptyset t : τ (Set t); // EmptySet
-constant symbol emtpyseq t : τ (Set (Z_T * t)); // EmptySeq
+constant symbol emptyseq t : τ (Set (Z_T * t)); // EmptySeq
 constant symbol cst t : ID → τ (Set t); // Id_exp
 
 // Integers
