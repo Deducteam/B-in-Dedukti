@@ -1,4 +1,15 @@
-// TODO fix infix precedence
+/* Infix precedences:
+1 - 10 propositions
+
+15 predicates
+
+125 arrow operators (-->, +->>, ...)
+
+160 operations on sets (∪, <+, map, ...)
+170 --
+
+180-200 arithmetic operators
+*/
 
 // Identifiers
 constant symbol ID : TYPE;
@@ -14,7 +25,7 @@ constant symbol τ : T → TYPE;
 // Type constructors
 constant symbol Set : T → T; // Pow
 constant symbol * : T → T → T; // Product
-notation * infix 1;
+notation * infix left 1;
 
 // Base types
 constant symbol Z_T : T;
@@ -84,13 +95,13 @@ constant symbol skip [id1 t1 id2 t2 s] : accessible id1 t1 s → accessible id1 
 constant symbol TRUE : U; // nullary Or
 constant symbol FALSE : U; // nullary And
 constant symbol ⇒ : U → U → U; // Imply
-notation ⇒ infix 1;
+notation ⇒ infix right 1;
 constant symbol ⇔ : U → U → U; // Equiv
-notation ⇔ infix 1;
-constant symbol ∧ : U → U → U; // And
-notation ∧ infix 1;
+notation ⇔ infix right 2;
 constant symbol ∨ : U → U → U; // Or
-notation ∨ infix 1;
+notation ∨ infix right 3;
+constant symbol ∧ : U → U → U; // And
+notation ∧ infix right 4;
 constant symbol ¬ : U → U; // Not
 
 // Quantifiers
@@ -101,45 +112,45 @@ notation ∃ quantifier;
 
 // Binary predicates
 constant symbol ∈ [t] : τ t → τ (Set t) → U; // Belong
-notation ∈ infix 1;
+notation ∈ infix 15;
 constant symbol notin [t] : τ t → τ (Set t) → U; // NotBelong
-notation notin infix 1;
+notation notin infix 15;
 constant symbol ⊆ [t] : τ (Set t) → τ (Set t) → U; // Included
-notation ⊆ infix 1;
+notation ⊆ infix 15;
 constant symbol notincluded [t] : τ (Set t) → τ (Set t) → U; // NotIncluded
-notation notincluded infix 1;
+notation notincluded infix 15;
 constant symbol ⊂ [t] : τ (Set t) → τ (Set t) → U; // StrictIncluded
-notation ⊂ infix 1;
+notation ⊂ infix 15;
 constant symbol notstrictincluded [t] : τ (Set t) → τ (Set t) → U; // NotStrictIncluded
-notation notstrictincluded infix 1;
+notation notstrictincluded infix 15;
 constant symbol = [t] : τ t → τ t → U; // Equal
-notation = infix 1;
+notation = infix 15;
 constant symbol ≠ [t] : τ t → τ t → U; // NotEqual
-notation ≠ infix 1;
+notation ≠ infix 15;
 constant symbol ≥i : τ Z_T → τ Z_T → U; // IGeq
-notation ≥i infix 1;
+notation ≥i infix 15;
 constant symbol >i : τ Z_T → τ Z_T → U; // IGreater
-notation >i infix 1;
+notation >i infix 15;
 constant symbol <i : τ Z_T → τ Z_T → U; // ISmaller
-notation <i infix 1;
+notation <i infix 15;
 constant symbol ≤i : τ Z_T → τ Z_T → U; // ILeq
-notation ≤i infix 1;
+notation ≤i infix 15;
 constant symbol ≥r : τ R_T → τ R_T → U; // RGeq
-notation ≥r infix 1;
+notation ≥r infix 15;
 constant symbol >r : τ R_T → τ R_T → U; // RGreater
-notation >r infix 1;
+notation >r infix 15;
 constant symbol <r : τ R_T → τ R_T → U; // RSmaller
-notation <r infix 1;
+notation <r infix 15;
 constant symbol ≤r : τ R_T → τ R_T → U; // RLeq
-notation ≤r infix 1;
+notation ≤r infix 15;
 constant symbol ≥f : τ FLOAT_T → τ FLOAT_T → U; // FGeq
-notation ≥f infix 1;
+notation ≥f infix 15;
 constant symbol >f : τ FLOAT_T → τ FLOAT_T → U; // FGreater
-notation >f infix 1;
+notation >f infix 15;
 constant symbol <f : τ FLOAT_T → τ FLOAT_T → U; // FSmaller
-notation <f infix 1;
+notation <f infix 15;
 constant symbol ≤f : τ FLOAT_T → τ FLOAT_T → U; // FLeq
-notation ≤f infix 1;
+notation ≤f infix 15;
 
 // Unary operators
 // Max does not exist
@@ -196,89 +207,90 @@ constant symbol right_tree [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Set
 constant symbol infix_tree [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Z_T * t)); // Infix
 constant symbol bin_unary [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Set (Z_T * Z_T) * t)); // Bin_unary
 
+// TODO fix infix
 // Binary operators
 constant symbol pair [t u] : τ t → τ u → τ (t * u); // Pair
 // Prod does not exist
 constant symbol *_i : τ Z_T → τ Z_T → τ Z_T; // IProd
-notation *_i infix 1;
+notation *_i infix left 190;
 constant symbol *_r : τ R_T → τ R_T → τ R_T; // RProd
-notation *_r infix 1;
+notation *_r infix left 190;
 constant symbol *_f : τ FLOAT_T → τ FLOAT_T → τ FLOAT_T; // FProd
-notation *_f infix 1;
+notation *_f infix left 190;
 constant symbol *_s [t u] : τ (Set t) → τ (Set u) → τ (Set (t * u)); // SProd
-notation *_s infix 1;
+notation *_s infix left 190;
 // Exp does not exist
 constant symbol **i : τ Z_T → τ Z_T → τ Z_T; // IExp
-notation **i infix 1;
+notation **i infix right 200;
 constant symbol **r : τ R_T → τ R_T → τ R_T; // RExp
-notation **r infix 1;
+notation **r infix right 200;
 // Plus does not exist
 constant symbol +_i : τ Z_T → τ Z_T → τ Z_T; // IPlus
-notation +_i infix 1;
+notation +_i infix left 180;
 constant symbol +_r : τ R_T → τ R_T → τ R_T; // RPlus
-notation +_r infix 1;
+notation +_r infix left 180;
 constant symbol +_f : τ FLOAT_T → τ FLOAT_T → τ FLOAT_T; // FPlus
-notation +_f infix 1;
+notation +_f infix left 180;
 constant symbol +-> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // Partial
-notation +-> infix 1;
+notation +-> infix left 125;
 constant symbol +->> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // PartialSurj
-notation +->> infix 1;
+notation +->> infix left 125;
 // Minus does not exist
 constant symbol -_i : τ Z_T → τ Z_T → τ Z_T; // IMinus
-notation -_i infix 1;
+notation -_i infix left 180;
 constant symbol -_r : τ R_T → τ R_T → τ R_T; // RMinus
-notation -_r infix 1;
+notation -_r infix left 180;
 constant symbol -_f : τ FLOAT_T → τ FLOAT_T → τ FLOAT_T; // FMinus
-notation -_f infix 1;
+notation -_f infix left 180;
 constant symbol -_s [t] : τ (Set t) → τ (Set t) → τ (Set t); // SMinus
-notation -_s infix 1;
+notation -_s infix left 180;
 constant symbol --> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // Total
-notation --> infix 1;
+notation --> infix left 125;
 constant symbol -->> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // TotalSurj
-notation -->> infix 1;
+notation -->> infix left 125;
 constant symbol -> [t] : τ t → τ (Set (Z_T * t)) → τ (Set (Z_T * t)); // HeadInsert
-notation -> infix 1;
+notation -> infix left 160;
 constant symbol -- : τ Z_T → τ Z_T → τ (Set Z_T); // Interval
-notation -- infix 1;
+notation -- infix left 170;
 // Div does not exist
 constant symbol div_i : τ Z_T → τ Z_T → τ Z_T; // IDiv
-notation div_i infix 1;
+notation div_i infix left 190;
 constant symbol div_r : τ R_T → τ R_T → τ R_T; // RDiv
-notation div_r infix 1;
+notation div_r infix left 190;
 constant symbol div_f : τ FLOAT_T → τ FLOAT_T → τ FLOAT_T; // FDiv
-notation div_f infix 1;
+notation div_f infix left 190;
 constant symbol ∩ [t] : τ (Set t) → τ (Set t) → τ (Set t); // Inter
-notation ∩ infix 1;
+notation ∩ infix left 160;
 constant symbol headrestrict [t] : τ (Set (Z_T * t)) → τ Z_T → τ (Set (Z_T * t)); // HeadRestrict
 constant symbol comp [t u v] : τ (Set (t * u)) → τ (Set (u * v)) → τ (Set (t * v)); // Compose
 constant symbol <+ [t u] : τ (Set (t * u)) → τ (Set (t * u)) → τ (Set (t * u)); // Overload
-notation <+ infix 1;
+notation <+ infix left 160;
 constant symbol <-> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // Relation
-notation <-> infix 1;
+notation <-> infix left 125;
 constant symbol <- [t] : τ (Set (Z_T * t)) → τ t → τ (Set (Z_T * t)); // TailInsert
-notation <- infix 1;
+notation <- infix left 160;
 constant symbol dom- [t u] : τ (Set t) → τ (Set (t * u)) → τ (Set (t * u)); // DomSubtract
 constant symbol domrestrict [t u] : τ (Set t) → τ (Set (t * u)) → τ (Set (t * u)); // DomSubtract
 constant symbol >+> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // PartialInject
-notation >+> infix 1;
+notation >+> infix left 125;
 constant symbol >-> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // TotalInject
-notation >-> infix 1;
+notation >-> infix left 125;
 // DoesntExist (>+>>) does not exist
 constant symbol >->> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // TotalBiject
-notation >->> infix 1;
+notation >->> infix left 125;
 constant symbol >< [t u v] : τ (Set (t * u)) → τ (Set (t * v)) → τ (Set (t * (u * v))); // DirectProd
-notation >< infix 1;
+notation >< infix left 160;
 constant symbol par [t u v w] : τ (Set (t * u)) → τ (Set (v * w)) → τ (Set ((t * v) * (u * w))); // ParallelProd
-notation par infix 1;
+notation par infix left 160;
 constant symbol ∪ [t] : τ (Set t) → τ (Set t) → τ (Set t); // Union
-notation ∪ infix 1;
+notation ∪ infix left 160;
 constant symbol tailrestrict [t] : τ (Set (Z_T * t)) → τ Z_T → τ (Set (Z_T * t)); // TailRestrict
 constant symbol ^ [t] : τ (Set (Z_T * t)) → τ (Set (Z_T * t)) → τ (Set (Z_T * t)); // Concat
-notation ^ infix 1;
+notation ^ infix left 160;
 constant symbol mod : τ Z_T → τ Z_T → τ Z_T; // Mod
-notation mod infix 1;
+notation mod infix left 190;
 constant symbol map [t u] : τ t → τ u → τ (t * u); // MapLet
-notation map infix 1;
+notation map infix left 160;
 constant symbol imagerestrict [t u] : τ (Set (t * u)) → τ (Set u) → τ (Set (t * u)); // ImageRestrict
 constant symbol image- [t u] : τ (Set (t * u)) → τ (Set u) → τ (Set (t * u)); // ImageSubtract
 constant symbol image [t u] : τ (Set (t * u)) → τ (Set t) → τ (Set u); // Image

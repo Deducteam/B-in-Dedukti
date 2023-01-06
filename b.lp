@@ -119,7 +119,7 @@ notation >_FLOAT infix 2;
 /* Expressions */
 // TODO what is $0 and renaming data?
 
-// TODO data definitions: strings, integers, and reals (and floats?)
+// TODO data definitions: strings and reals (and floats?)
 constant symbol 0 : τ Z_T;
 constant symbol 1 : τ Z_T;
 
