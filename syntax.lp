@@ -349,6 +349,3 @@ constant symbol struct (r : record_sig) : τ (Set (struct_T (struct_type r))); /
 constant symbol record (r : record_sig) : τ (struct_T (record_type r)); // Record
 constant symbol record_update [t u] (r : τ (struct_T t)) (i : ID) : τ u → accessible i u t → τ (struct_T t); // Record_Update
 constant symbol record_field_access [t u] (r : τ (struct_T t)) (i : ID) : accessible i u t → τ u; // Record_Field_Access
-
-constant symbol id1 : ID;
-constant symbol id2 : ID;
