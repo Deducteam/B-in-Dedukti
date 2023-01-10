@@ -53,10 +53,14 @@ constant symbol typlist : TYPE;
 constant symbol typnil : T → typlist;
 constant symbol typcons : T → typlist → typlist;
 symbol curryT : typlist → T → TYPE;
+unif_rule curryT $a $b ≡ τ $t → τ $u ↪ [$a ≡ typnil $t; $b ≡ $u];
+unif_rule curryT $a $b ≡ τ $t → $u → $v ↪ [$a ≡ typcons $t $l; curryT $l $b ≡ $u → $v];
 rule curryT (typnil $t) $u ↪ τ $t → τ $u;
 rule curryT (typcons $t $l) $u ↪ τ $t → curryT $l $u;
 
 symbol curryU : typlist → TYPE;
+unif_rule curryU $a ≡ τ $t → U ↪ [$a ≡ typnil $t];
+unif_rule curryU $a ≡ τ $t → $u → $v ↪ [$a ≡ typcons $t $l; curryU $l ≡ $u → $v];
 rule curryU (typnil $t) ↪ τ $t → U;
 rule curryU (typcons $t $l) ↪ τ $t → curryU $l;
 
@@ -207,7 +211,6 @@ constant symbol right_tree [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Set
 constant symbol infix_tree [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Z_T * t)); // Infix
 constant symbol bin_unary [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Set (Z_T * Z_T) * t)); // Bin_unary
 
-// TODO fix infix
 // Binary operators
 constant symbol pair [t u] : τ t → τ u → τ (t * u); // Pair
 // Prod does not exist
@@ -270,7 +273,7 @@ notation <-> infix left 125;
 constant symbol <- [t] : τ (Set (Z_T * t)) → τ t → τ (Set (Z_T * t)); // TailInsert
 notation <- infix left 160;
 constant symbol dom- [t u] : τ (Set t) → τ (Set (t * u)) → τ (Set (t * u)); // DomSubtract
-constant symbol domrestrict [t u] : τ (Set t) → τ (Set (t * u)) → τ (Set (t * u)); // DomSubtract
+constant symbol domrestrict [t u] : τ (Set t) → τ (Set (t * u)) → τ (Set (t * u)); // DomRestrict
 constant symbol >+> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // PartialInject
 notation >+> infix left 125;
 constant symbol >-> [t u] : τ (Set t) → τ (Set u) → τ (Set (Set (t * u))); // TotalInject
@@ -303,7 +306,7 @@ constant symbol const [t] : τ t → τ (Set (Z_T * Set (Set(Z_T * Z_T) * t))) �
 constant symbol rank [t] : τ (Set (Set(Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ Z_T; // Rank
 constant symbol father [t] : τ (Set (Set(Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ (Set (Z_T * Z_T)); // Father
 constant symbol subtree [t] : τ (Set (Set(Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ (Set (Set (Z_T * Z_T) * t)); // Subtree
-constant symbol arity [t] : τ (Set (Set(Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ Z_T; // arity
+constant symbol arity [t] : τ (Set (Set(Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ Z_T; // Arity
 
 // Ternary operators
 constant symbol son [t] : τ (Set (Set (Z_T * Z_T) * t)) → τ (Set (Z_T * Z_T)) → τ Z_T → τ (Set (Z_T * Z_T)); // Son
