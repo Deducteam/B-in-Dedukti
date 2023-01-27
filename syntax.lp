@@ -53,14 +53,10 @@ constant symbol typlist : TYPE;
 constant symbol typnil : T → typlist;
 constant symbol typcons : T → typlist → typlist;
 symbol curryT : typlist → T → TYPE;
-unif_rule curryT $a $b ≡ τ $t → τ $u ↪ [$a ≡ typnil $t; $b ≡ $u];
-unif_rule curryT $a $b ≡ τ $t → $u → $v ↪ [$a ≡ typcons $t $l; curryT $l $b ≡ $u → $v];
 rule curryT (typnil $t) $u ↪ τ $t → τ $u;
 rule curryT (typcons $t $l) $u ↪ τ $t → curryT $l $u;
 
 symbol curryU : typlist → TYPE;
-unif_rule curryU $a ≡ τ $t → U ↪ [$a ≡ typnil $t];
-unif_rule curryU $a ≡ τ $t → $u → $v ↪ [$a ≡ typcons $t $l; curryU $l ≡ $u → $v];
 rule curryU (typnil $t) ↪ τ $t → U;
 rule curryU (typcons $t $l) ↪ τ $t → curryU $l;
 
@@ -159,10 +155,10 @@ notation ≤f infix 15;
 // Unary operators
 // Max does not exist
 constant symbol imax : τ (Set Z_T) → τ Z_T; // IMax
-constant symbol rmax : τ (Set R_T) → τ Z_T; // RMax
+constant symbol rmax : τ (Set R_T) → τ R_T; // RMax
 // Min does not exist
 constant symbol imin : τ (Set Z_T) → τ Z_T; // IMin
-constant symbol rmin : τ (Set R_T) → τ Z_T; // RMin
+constant symbol rmin : τ (Set R_T) → τ R_T; // RMin
 constant symbol card [t] : τ (Set t) → τ Z_T; // Card
 constant symbol dom [t u] : τ (Set (t * u)) → τ (Set t); // Dom
 constant symbol ran [t u] : τ (Set (t * u)) → τ (Set u); // Ran
